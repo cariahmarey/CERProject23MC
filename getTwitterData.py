@@ -58,7 +58,7 @@ def main():
     print(df.head())
     print(df.size)
 
-    df.to_csv("./data/user_ids.csv", sep=';', encoding='utf-8')
+    df.to_csv("./data/user_ids.csv", sep=',', encoding='utf-8')
     # warum sind die Zahlen so scheisse
 
 
