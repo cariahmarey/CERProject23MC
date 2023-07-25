@@ -118,7 +118,7 @@ def get_all_user_descriptions(usernames_csv):
     query_count = 0
     query_limit = 95
 
-    for username in usernames_df['user'][97:]:
+    for username in usernames_df['user']:
         # Call the get_user_description function for each username
         user_description = get_user_description(username)
         usernames_df.at[usernames_df.index[query_count], 'profile'] = user_description
@@ -144,9 +144,9 @@ def main():
     #get_userid_from_dataset("./data/Bundestagswahl_2021_Kandidierenden.csv")
     #get_username_from_dataset("./data/EPINetz_TwitterPoliticians_2021.csv")
     #make_post_request(graphql_url, body)
-    #get_all_user_descriptions("./data/username.csv")
-    get_all_user_descriptions("./data/username_with_description.csv")
-    #get_user_description("koehler_fdp")
+    get_all_user_descriptions("./data/username.csv")
+    #get_user_description("gerdlippold")
+
 
 
 if __name__ == "__main__":
