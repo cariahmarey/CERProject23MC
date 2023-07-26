@@ -134,19 +134,24 @@ def get_all_user_descriptions(usernames_csv):
 
     usernames_df.to_csv("./data/username_with_description.csv", sep=',', encoding='utf-8')
 
-    # # Loop over the DataFrame to retrieve usernames and their descriptions
-    # usernames_df['profile'] = usernames_df['user'].apply(get_user_description)
-    # usernames_df.to_csv("./data/username_with_description.csv", sep=',', encoding='utf-8')
 
+# Removing doubled names and users with noch description
+def clean_dataset(csv):
+    df = pd.read_csv(csv, encoding="utf-8", sep=',')
+    df.drop_duplicates(subset=['user'], keep='first', inplace=True)
+    df.dropna(inplace=True)
+    df = df[['user', 'profile']]
+    df.reset_index(drop=True, inplace=True)
+    df.to_csv("./data/username_with_description.csv", sep=',', encoding='utf-8')
 
 
 def main():
     #get_userid_from_dataset("./data/Bundestagswahl_2021_Kandidierenden.csv")
     #get_username_from_dataset("./data/EPINetz_TwitterPoliticians_2021.csv")
     #make_post_request(graphql_url, body)
-    get_all_user_descriptions("./data/username.csv")
-    #get_user_description("gerdlippold")
-
+    #get_all_user_descriptions("./data/username.csv")
+    #get_user_description("LuciaPuttrich")
+    clean_dataset("./data/username_with_description.csv")
 
 
 if __name__ == "__main__":
