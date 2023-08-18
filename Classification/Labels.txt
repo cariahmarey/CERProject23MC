@@ -1,0 +1,26 @@
+1 ökonomisch links + soziokulturell links
+2 ökonomisch links + soziokulturell neutral
+3 ökonomisch links + soziokulturell rechts
+4 ökonomisch neutral + soziokulturell links
+5 ökonomisch neutral + soziokulturell neutral
+6 ökonomisch neutral + soziokulturell rechts
+7 ökonomisch rechts + soziokulturell links
+8 ökonomisch rechts + soziokulturell neutral
+9 ökonomisch rechts + soziokulturell rechts
+
+
+
+Spektrum der Parteien:
+1/2/3	Die Linke 
+	Grüne 
+SPD 2/
+CDU 9
+AfD 9
+
+
+Linke: soziokulturell links + ökonomisch links
+SPD: soziokulturell neutral + ökonomisch neutral
+Grüne: soziokulturell links + ökonomisch neutral
+CDU/CSU: soziokulturell rechts + ökonomisch neutral
+FDP: soziokulturell neutral + ökonomisch rechts
+AfD: soziokulturell rechts + ökonomisch rechts
