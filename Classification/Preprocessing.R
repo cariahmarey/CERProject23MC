@@ -54,9 +54,6 @@ write.table(labeled_profiles_df_subset,
 
 
 #-------- create folds for cross-validation
-install.packages("caret")
-install.packages("cli")
-library(cli)
 library(caret)
 library(xlsx)
 library(dplyr)
@@ -66,8 +63,13 @@ labeled_profiles_df <- read.xlsx("Profiles_withoutPreLabeling.xlsx", sheetIndex 
 # only select the unlabeled rows
 unlabeled_profiles_df <- labeled_profiles_df %>%
   filter(row_number() > min(which(is.na(Label.Marius))))
+unlabeled_profiles_df <- 
 
 set.seed(123) # Set a seed for reproducibility
 folds <- createFolds(unlabeled_profiles_df$Label.Marius, k = 5)
+
+install.packages("installr")
+library(installr)
+updateR()
 
 
