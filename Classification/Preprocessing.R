@@ -20,12 +20,18 @@ library(xlsx)
 library(dplyr)
 
 # import xlsx with labels
-labeled_profiles_df <- read.xlsx("Labeled_Profiles_Marius.xlsx", sheetIndex = 1)
+labeledandunlabeled_profiles_df <- read.xlsx("LabeledAndUnlabeled_Profiles.xlsx", sheetIndex = 1)
 
+
+#---- for small-text:
 # create subset from xlsx with relevant columns an labeled examples
-labeled_profiles_df <- labeled_profiles_df[c("profile", "user_id", "Label.Marius")]
-labeled_profiles_df_subset <- labeled_profiles_df %>% 
-  filter(row_number() < min(which(is.na(Label.Marius))))
+labeled_profiles_df <- labeledandunlabeled_profiles_df %>% 
+  filter(row_number() < min(which(is.na(Label))))
+
+# rename column "profile" to "example"
+colnames(labeled_profiles_df)[3] <- "example"
+# rename column "LabelMarius" to "twitter_handle"
+colnames(labeled_profiles_df)[6] <- "label"
 
 # Function to remove line breaks from a single string
 remove_linebreaks <- function(s) {
@@ -33,7 +39,7 @@ remove_linebreaks <- function(s) {
 }
 
 # Apply the function to remove line breaks from the entire dataframe
-labeled_profiles_df_subset <- data.frame(lapply(labeled_profiles_df_subset, function(x) {
+labeled_profiles_df <- data.frame(lapply(labeled_profiles_df, function(x) {
   if (is.character(x) || is.factor(x)) {
     return(remove_linebreaks(x))
   } else {
@@ -41,9 +47,23 @@ labeled_profiles_df_subset <- data.frame(lapply(labeled_profiles_df_subset, func
   }
 }))
 
-# export csv
-write.table(labeled_profiles_df_subset, 
-            file = "initial_train.csv",
+# export csv for BERT
+write.table(labeled_profiles_df, 
+            file = "initial_train_bert.csv",
+            sep = ",",          # Use tab as the delimiter
+            eol = "\n",          # Set end of line character
+            na = "",             # How to represent missing values
+            row.names = FALSE,   # Do not write row names
+            col.names = TRUE,    # Write column names
+            quote = TRUE,        # Use quotes
+            qmethod = "double")  # Double quotes for escaping quotes
+
+
+# modify dataframe & export csv for small-text
+labeled_profiles_df_smalltext <- labeled_profiles_df[c("example", "label")]
+
+write.table(labeled_profiles_df_smalltext, 
+            file = "initial_train_smalltext.csv",
             sep = "\t",          # Use tab as the delimiter
             eol = "\n",          # Set end of line character
             na = "",             # How to represent missing values
@@ -53,23 +73,25 @@ write.table(labeled_profiles_df_subset,
             qmethod = "double")  # Double quotes for escaping quotes
 
 
-#-------- create folds for cross-validation
-library(caret)
+
+#-------- create dataframe with only unlabeled rows
 library(xlsx)
 library(dplyr)
 
 # import xlsx with pre-labeled sampled rows
-labeled_profiles_df <- read.xlsx("Profiles_withoutPreLabeling.xlsx", sheetIndex = 1)
+labeled_profiles_df <- read.xlsx("Profiles_withPreLabeling.xlsx", sheetIndex = 1)
 # only select the unlabeled rows
 unlabeled_profiles_df <- labeled_profiles_df %>%
-  filter(row_number() > min(which(is.na(Label.Marius))))
-unlabeled_profiles_df <- 
+  filter(row_number() > min(which(is.na(LabelMarius))))
+# only select column "profile" 
+unlabeled_profiles_df <- unlabeled_profiles_df["profile"]
+# rename column "profile" to "example"
+colnames(unlabeled_profiles_df)[1] <- "example"
 
-set.seed(123) # Set a seed for reproducibility
-folds <- createFolds(unlabeled_profiles_df$Label.Marius, k = 5)
+# write final csv
+write.csv(unlabeled_profiles_df, file = "trainingdata_classifier_cer.csv", row.names = F)
 
-install.packages("installr")
-library(installr)
-updateR()
+
+
 
 

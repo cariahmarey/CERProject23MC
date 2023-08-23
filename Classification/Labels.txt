@@ -7,20 +7,22 @@
 7 ökonomisch rechts + soziokulturell links
 8 ökonomisch rechts + soziokulturell neutral
 9 ökonomisch rechts + soziokulturell rechts
+10 keine Kategorie
 
 
 
-Spektrum der Parteien:
-1/2/3	Die Linke 
-	Grüne 
-SPD 2/
-CDU 9
-AfD 9
+1 Linke: ökonomisch links + soziokulturell links
+2 Grüne: ökonomisch neutral + soziokulturell links
+3 SPD: ökonomisch neutral + soziokulturell neutral
+4 CDU/CSU: ökonomisch neutral + soziokulturell rechts
+5 FDP: ökonomisch rechts + soziokulturell neutral 
+6 AfD: ökonomisch rechts + soziokulturell rechts
+7 keine Kategorie
 
-
-Linke: soziokulturell links + ökonomisch links
-SPD: soziokulturell neutral + ökonomisch neutral
-Grüne: soziokulturell links + ökonomisch neutral
-CDU/CSU: soziokulturell rechts + ökonomisch neutral
-FDP: soziokulturell neutral + ökonomisch rechts
-AfD: soziokulturell rechts + ökonomisch rechts
+0 Linke: ökonomisch links + libertär
+1 Grüne: ökonomisch neutral + libertär
+2 SPD: ökonomisch neutral + libertär/autoritär
+3 CDU/CSU: ökonomisch neutral + autoritär
+4 FDP: ökonomisch rechts + libertär/autoritär
+5 AfD: ökonomisch rechts + autoritär
+6 keine Kategorie
