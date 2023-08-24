@@ -47,8 +47,24 @@ labeled_profiles_df <- data.frame(lapply(labeled_profiles_df, function(x) {
   }
 }))
 
-# export csv for BERT
-write.table(labeled_profiles_df, 
+# modify dataframe for BERT
+library(data.table)
+labeled_profiles_df_bert <- labeled_profiles_df
+
+# Add a new column with value 1 to the dataframe
+labeled_profiles_df_bert$value <- 1
+
+# Convert df to a data table
+setDT(labeled_profiles_df_bert)
+
+# Reshape data
+labeled_profiles_df_bert_wide <- dcast(labeled_profiles_df_bert, ... ~ label, value.var = "value", fun.aggregate = sum, fill = 0)
+
+# Now, remove the original 'label' column if it exists in df_wide
+labeled_profiles_df_bert_wide[, label := NULL]
+
+#export csv for BERT
+write.table(labeled_profiles_df_bert_wide, 
             file = "initial_train_bert.csv",
             sep = ",",          # Use tab as the delimiter
             eol = "\n",          # Set end of line character
