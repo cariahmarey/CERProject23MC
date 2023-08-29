@@ -16,7 +16,7 @@ write.csv2(profiledescriptions_df, "profiledescriptions_withpartyanduserid.csv",
 
 
 #-------- create the initial training CSV
-library(xlsx)
+library(openxlsx)
 library(dplyr)
 
 # define function to remove line breaks from a single string
@@ -30,9 +30,13 @@ clean_spaces <- function(x) {
   gsub("\\s+", " ", trimmed) # replace multiple spaces with a single space
 }
 
+options(java.parameters = "-Xmx2000m")
 
-# import xlsx with labels
-labeledandunlabeled_profiles_df <- read.xlsx("LabeledandUnlabeled_Profiles.xlsx", sheetIndex = 1)
+library(rJava)
+
+# import xlsx
+labeledandunlabeled_profiles_df <- xlsx::read.xlsx("LabeledandUnlabeled_Profiles.xlsx", sheetIndex = 1)
+
 
 # Apply the functions line breaks and space functions from above
 labeledandunlabeled_profiles_df <- data.frame(lapply(labeledandunlabeled_profiles_df, function(x) {
@@ -43,7 +47,7 @@ labeledandunlabeled_profiles_df <- data.frame(lapply(labeledandunlabeled_profile
   }
 }))
 
-labeledandunlabeled_profiles_df$example <- sapply(labeledandunlabeled_profiles_df$example, clean_spaces)
+labeledandunlabeled_profiles_df$profile <- sapply(labeledandunlabeled_profiles_df$profile, clean_spaces)
 
 
 
@@ -156,7 +160,7 @@ write.table(labeled_profiles_df_bert,
             quote = TRUE,        # Use quotes
             qmethod = "double")  # Double quotes for escaping quotes
 
-#-------- create dataframe with only unlabeled rows
+#-------- create dataframe with only unlabeled rows as training data for small-text classifier
 library(xlsx)
 library(dplyr)
 
@@ -172,6 +176,9 @@ colnames(unlabeled_profiles_df)[1] <- "example"
 
 # write final csv
 write.csv(unlabeled_profiles_df, file = "trainingdata_classifier_cer.csv", row.names = F)
+
+
+#-------- create dataframe with only unlabeled rows as training data
 
 
 
