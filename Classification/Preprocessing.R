@@ -19,20 +19,22 @@ write.csv2(profiledescriptions_df, "profiledescriptions_withpartyanduserid.csv",
 library(xlsx)
 library(dplyr)
 
-# import xlsx with labels
-labeledandunlabeled_profiles_df <- read.xlsx("LabeledAndUnlabeled_Profiles.xlsx", sheetIndex = 1)
-
-# rename column "text" to "example" from full dataset
-colnames(labeledandunlabeled_profiles_df)[3] <- "example"
-# rename column "true label" to "label" from full dataset
-colnames(labeledandunlabeled_profiles_df)[6] <- "label"
-
-# Function to remove line breaks from a single string
+# define function to remove line breaks from a single string
 remove_linebreaks <- function(s) {
   return(gsub("\n|\r", " ", s))
 }
 
-# Apply the function to remove line breaks from the entire dataframe
+# define function to replace multiple spaces with a single space
+clean_spaces <- function(x) {
+  trimmed <- gsub("^\\s+|\\s+$", "", x) # remove leading and trailing spaces
+  gsub("\\s+", " ", trimmed) # replace multiple spaces with a single space
+}
+
+
+# import xlsx with labels
+labeledandunlabeled_profiles_df <- read.xlsx("LabeledandUnlabeled_Profiles.xlsx", sheetIndex = 1)
+
+# Apply the functions line breaks and space functions from above
 labeledandunlabeled_profiles_df <- data.frame(lapply(labeledandunlabeled_profiles_df, function(x) {
   if (is.character(x) || is.factor(x)) {
     return(remove_linebreaks(x))
@@ -40,6 +42,9 @@ labeledandunlabeled_profiles_df <- data.frame(lapply(labeledandunlabeled_profile
     return(x)
   }
 }))
+
+labeledandunlabeled_profiles_df$example <- sapply(labeledandunlabeled_profiles_df$example, clean_spaces)
+
 
 
 #---- for small-text:
@@ -51,6 +56,7 @@ labeled_profiles_df <- labeledandunlabeled_profiles_df %>%
 colnames(labeled_profiles_df)[3] <- "example"
 # rename column "LabelMarius" to "twitter_handle"
 colnames(labeled_profiles_df)[6] <- "label"
+
 
 
 #-- modify dataframe & export csv for small-text
@@ -65,6 +71,7 @@ write.table(labeled_profiles_df_smalltext,
             col.names = TRUE,    # Write column names
             quote = TRUE,        # Use quotes
             qmethod = "double")  # Double quotes for escaping quotes
+
 
 
 #-- modify dataframe for BERT
@@ -86,6 +93,21 @@ for (sheet in sheet_names) {
   classified_examples_fromsmalltext <- bind_rows(classified_examples_fromsmalltext, sheet_data)
 }
 
+# Apply the functions line breaks and space functions from above
+classified_examples_fromsmalltext <- data.frame(lapply(classified_examples_fromsmalltext, function(x) {
+  if (is.character(x) || is.factor(x)) {
+    return(remove_linebreaks(x))
+  } else {
+    return(x)
+  }
+}))
+
+classified_examples_fromsmalltext$text <- sapply(classified_examples_fromsmalltext$text, clean_spaces)
+
+# replace every 4 with a 2
+# Substitute every occurrence of a 4 with a 2 in 'target_column' because it got parsed wrong
+classified_examples_fromsmalltext$text <- gsub("4", "2", classified_examples_fromsmalltext$text)
+
 # rename column "text" to "example"
 colnames(classified_examples_fromsmalltext)[1] <- "example"
 # rename column "true label" to "label"
@@ -93,19 +115,35 @@ colnames(classified_examples_fromsmalltext)[3] <- "label"
 # delete second column with predicted label
 classified_examples_fromsmalltext[[2]] <- NULL
 
-
+# rename column "text" to "example" from full dataset
+colnames(labeledandunlabeled_profiles_df)[3] <- "example"
+# rename column "true label" to "label" from full dataset
+colnames(labeledandunlabeled_profiles_df)[6] <- "label"
 
 # get X, twitter_handle, user_id and party from full dataset
 classified_examples_fromsmalltext$X <- labeledandunlabeled_profiles_df$X[match(classified_examples_fromsmalltext$example, labeledandunlabeled_profiles_df$example)]
 classified_examples_fromsmalltext$twitter_handle <- labeledandunlabeled_profiles_df$twitter_handle[match(classified_examples_fromsmalltext$example, labeledandunlabeled_profiles_df$example)]
 classified_examples_fromsmalltext$user_id <- labeledandunlabeled_profiles_df$user_id[match(classified_examples_fromsmalltext$example, labeledandunlabeled_profiles_df$example)]
 classified_examples_fromsmalltext$party <- labeledandunlabeled_profiles_df$party[match(classified_examples_fromsmalltext$example, labeledandunlabeled_profiles_df$example)]
-# transform label column to character
+
 labeled_profiles_df$label <- as.character(labeled_profiles_df$label)
 classified_examples_fromsmalltext$label <- as.character(classified_examples_fromsmalltext$label)
 
-# combine both dfs
+
 labeled_profiles_df_bert <- bind_rows(labeled_profiles_df, classified_examples_fromsmalltext)
+
+# Substitute values in 'label' with correct label names
+labeled_profiles_df_bert <- labeled_profiles_df_bert %>%
+  mutate(label = case_when(
+    label == "0" ~ "0 Linke: ökonomisch links + libertär",
+    label == "1" ~ "1 Grüne: ökonomisch neutral + libertär",
+    label == "2" ~ "2 SPD: ökonomisch neutral + libertär/autoritär",
+    label == "3" ~ "3 CDU/CSU: ökonomisch neutral + autoritär",
+    label == "4" ~ "4 FDP: ökonomisch rechts + libertär/autoritär",
+    label == "5" ~ "5 AfD: ökonomisch rechts + autoritär",
+    label == "6" ~ "6 keine Kategorie",
+    TRUE ~ label # If none of the above conditions are met, retain original value
+  ))
 
 #export csv for BERT
 write.table(labeled_profiles_df_bert, 
@@ -117,7 +155,6 @@ write.table(labeled_profiles_df_bert,
             col.names = TRUE,    # Write column names
             quote = TRUE,        # Use quotes
             qmethod = "double")  # Double quotes for escaping quotes
-
 
 #-------- create dataframe with only unlabeled rows
 library(xlsx)
@@ -137,5 +174,6 @@ colnames(unlabeled_profiles_df)[1] <- "example"
 write.csv(unlabeled_profiles_df, file = "trainingdata_classifier_cer.csv", row.names = F)
 
 
-#-------- create different datasets
+
+
 
