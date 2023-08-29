@@ -7,7 +7,7 @@ async function authenticateUser() {
         const credential = await new Auth().getUserCredential({
             email: 'behrendmax8@gmail.com',
             userName: 'csgohan123',
-            password: 'albertina4life#'
+            password: ''
         });
         
         console.log('Authentication successful');
