@@ -30,12 +30,17 @@ clean_spaces <- function(x) {
   gsub("\\s+", " ", trimmed) # replace multiple spaces with a single space
 }
 
-options(java.parameters = "-Xmx2000m")
-
-library(rJava)
-
 # import xlsx
-labeledandunlabeled_profiles_df <- xlsx::read.xlsx("LabeledandUnlabeled_Profiles.xlsx", sheetIndex = 1)
+labeledandunlabeled_profiles_df <- openxlsx::read.xlsx("LabeledandUnlabeled_Profiles.xlsx")
+
+# Remove the '_x000D_' from the entire dataframe
+labeledandunlabeled_profiles_df[] <- lapply(labeledandunlabeled_profiles_df, function(col) {
+  if(is.character(col)) {
+    return(gsub("_x000D_", "", col))
+  } else {
+    return(col)
+  }
+})
 
 
 # Apply the functions line breaks and space functions from above
@@ -48,7 +53,6 @@ labeledandunlabeled_profiles_df <- data.frame(lapply(labeledandunlabeled_profile
 }))
 
 labeledandunlabeled_profiles_df$profile <- sapply(labeledandunlabeled_profiles_df$profile, clean_spaces)
-
 
 
 #---- for small-text:
@@ -180,7 +184,21 @@ write.csv(unlabeled_profiles_df, file = "trainingdata_classifier_cer.csv", row.n
 
 #-------- create dataframe with only unlabeled rows as training data
 
+unlabeled_profiles_df <- bind_rows(labeled_profiles_df_bert, labeledandunlabeled_profiles_df)
+
+# Sort by 'label' and remove duplicates based on 'twitter_handle'
+unlabeled_profiles_df <- unlabeled_profiles_df %>% 
+  arrange(!is.na(label), twitter_handle) %>%  # Sort such that NA values in 'label' come first
+  distinct(twitter_handle, .keep_all = TRUE)  # Remove duplicates and keep the first occurrence
+
+# Now, remove rows with non-NA values in the 'label' column
+unlabeled_profiles_df <- unlabeled_profiles_df %>%
+  filter(is.na(label))
+
+unlabeled_profiles_df$label_r1 <- NA
+unlabeled_profiles_df$label_r2 <- NA
 
 
+write.xlsx(unlabeled_profiles_df, "unlabeled_profiles.xlsx")
 
 
