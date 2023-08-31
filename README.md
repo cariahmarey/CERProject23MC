@@ -10,7 +10,7 @@ University project for the seminar "Computational Empirical Research" by
 ## FileHandling & Classification
 * Used to prepare and handle the different files with labeled and unlabeled data
 * `FileHandling & Classification/Predicted Labels` contains the CSVs with the 350 predicted labels from the active learning process from small-text
-* * `FileHandling & Classification/True Labels` contains an XLSX with the 350 predicted and the manually coded labels 
+* `FileHandling & Classification/True Labels` contains an XLSX with the 350 predicted and the manually coded labels 
 * `FileHandling & Classification/initial_train_bert.csv` & `FileHandling & Classification/initial_train_bert.csv` are the training files for the different machine-learning-methods
 * In `FileHandling & Classification/labeled_profiles_candm.xlsx` there are the 200 manually labeled examples from both coders and in `FileHandling & Classification/labeled_testdata_bert.csv` & `FileHandling & Classification/labeled_testdata_smalltext.csv` are the according datasets for the test run
 * `FileHandling & Classification/LabeledandUnlabeled_Profiles.xlsx` contains the 70 prelabeled texts + all other unlabeled texts
