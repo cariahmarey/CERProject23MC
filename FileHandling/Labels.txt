@@ -1,0 +1,7 @@
+0 Linke: ökonomisch links + libertär
+1 Grüne: ökonomisch neutral + libertär
+2 SPD: ökonomisch neutral + libertär/autoritär
+3 CDU/CSU: ökonomisch neutral + autoritär
+4 FDP: ökonomisch rechts + libertär/autoritär
+5 AfD: ökonomisch rechts + autoritär
+6 keine Kategorie
