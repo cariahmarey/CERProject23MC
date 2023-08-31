@@ -3,9 +3,9 @@ University project for the seminar "Computational Empirical Research" by
 * Marius Behret
 * Cuong Vo Ta
 ## Data Collection
-* The original twitter dataset of [The German Federal Election 2021](https://blog.gesis.org/the-german-federal-election-2021-twitter-dataset/) is in `Data Collection/EPINetz_TwitterPoliticians_2021.csv`
+* The original twitter dataset of [The German Federal Election 2021](https://blog.gesis.org/the-german-federal-election-2021-twitter-dataset/) is in `EPINetz_TwitterPoliticians_2021.csv`
 * In the scraping folder is the python script `getTwitterData.py` which is using the [Rettiwt-API](https://github.com/Rishikant181/Rettiwt-API) to fetch profile description of twitter users
-* The complete and cleaned dataset with 2048 twitter user and their profile description can be found in `Data Collection/username_with_description_cleaned.csv`
+* The complete and cleaned dataset with 2048 twitter user and their profile description can be found in `username_with_description_cleaned.csv`
 
 ## FileHandling & Classification
 * Used to prepare and handle the different files with labeled and unlabeled data
